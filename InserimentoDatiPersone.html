@@ -1,0 +1,158 @@
+<html>
+<head>
+	<title>Inserimento dati MoDiFicAtO</title>
+	<style>	
+		body{
+			background: #f2f2f2;
+		}
+		
+		h2.title{
+			font-family: arial;
+			font-size: 200%; 
+			margin-bottom: 2px;
+		}
+		
+		h2{
+			font-family: arial;
+			font-size: 130%; 
+		}
+		
+		
+		input[type = "button"]{
+			width: 100px;
+			height: 50px;
+			margin-bottom: 5;
+			font-size: 25px;
+		}
+		textarea{
+			font-family: arial;
+			font-size: 180%;
+		}
+		
+		div.display{
+			height: 35px;
+			margin-left: 510px;
+			margin-top: -340px;
+		}
+		
+		
+		@media only screen and (max-width:620px) {
+		input[type = "button"], textarea, h2, div.display {
+			width:100%;
+			}
+		}
+		
+		* {
+			box-sizing: border-box;
+		}
+	</style>
+	<script>
+		var obj = [];
+		var dati;
+		var pos = 0, nElementi = 4, nPers = 0, cont = 0;
+		function invia(){
+			var	nome = document.getElementById("nome").value;
+			var	cognome = document.getElementById("cognome").value;
+			var	eta = document.getElementById("eta").value;
+			var	lavoro = document.getElementById("lavoro").value;
+			
+			obj[0 + cont] = nome;
+			obj[1 + cont] = cognome;
+			obj[2 + cont] = eta;
+			obj[3 + cont] = lavoro;
+			var str = JSON.stringify(obj);
+			localStorage.setItem('dati', str);
+			cont += nElementi;
+		}
+		
+		function vaiAvanti(){
+			if(pos + nElementi <= cont - 1){
+				pos += nElementi;
+				var slc = obj.slice(pos, pos + nElementi);
+				var str = JSON.stringify(slc);
+				localStorage.setItem('dati', str);
+				visualizza();	
+			}
+		}
+		
+		function vaiIndietro(){
+			if(pos - nElementi >= 0){
+				pos -= nElementi;
+				var slc = obj.slice(pos, pos + nElementi);
+				var str = JSON.stringify(slc);
+				localStorage.setItem('dati', str);
+				visualizza();
+			}
+		}
+		
+		
+		function inizio(){
+			pos = 0;
+			var slc = obj.slice(0, nElementi);
+			var str = JSON.stringify(slc);
+			localStorage.setItem('dati', str);
+			visualizza();
+		}
+		
+		function fine(){
+			pos = cont - nElementi;
+			var slc = obj.slice(pos, pos + nElementi);
+			var str = JSON.stringify(slc);
+			localStorage.setItem('dati', str);
+			visualizza();
+		}
+		
+		function visualizza(){
+			var c = 0, f = 0, str = localStorage.getItem("dati");
+			while(c < nElementi){
+				i = f;
+				while(str.charAt(i) != '"'){
+					i++;
+				}
+				f = i + 1;
+				while(str.charAt(f) != '"'){
+					f++;
+				}
+				var slc = str.slice(i + 1, f);
+				f++;
+				switch(c){
+					case 0:
+						document.getElementById("display").value = slc;
+						break;
+					case 1:
+						document.getElementById("display").value += " " + slc;
+						break;
+					case 2:
+						document.getElementById("display").value += "\n\n Età: " + slc + " anni";
+						break;
+					case 3:
+						document.getElementById("display").value += "\n Lavoro: " + slc;
+						break;
+				}
+				c++;
+			}
+		}
+	</script>
+</head>
+<body>
+	<h2 class="title">"Inserimento Dati"</h2>
+	<h2 class="title" style="margin-left: 3%">Gruppo V</h2>
+	<form>
+		<h2>Nome:<input type="text" id="nome"></h2>
+		<h2>Cognome:<input type="text" id="cognome"></h2>	
+		<h2>Età:<input type="text" id="eta"></h2>
+		<h2>Lavoro:<input type="text" id="lavoro"></h2>			
+	</form>
+
+	<input type="button" id="invio" value="invia" onclick="invia()">
+	<div class="display">
+		<form>
+			<textarea id="display" rows="5" cols="27" readonly></textarea>	
+		</form> 
+		<input type="button" id="inizio" value="inizio" onclick="inizio()">
+		<input type="button" id="indietro" value="<--"onclick="vaiIndietro()">
+		<input type="button" id="avanti" value="-->"onclick="vaiAvanti()">
+		<input type="button" id="fine" value="fine" onclick="fine()">
+	</div>
+</body>
+</html>
